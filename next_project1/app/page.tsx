@@ -1,10 +1,16 @@
 import { PrismaClient } from "@prisma/client";
-
-const client = new PrismaClient();
+import client from "@/db";
 
 async function getUserDetails() {
   try {
-    const user = await client.user.findFirst({});
+    const users = await client.user.findMany({
+      orderBy: {
+        id: "desc",
+      },
+      take: 1,
+    });
+
+    const user = users[0];
     return {
       username: user?.username,
       password: user?.password,
@@ -24,6 +30,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <h1>Name: {userDetails.username}</h1>
+      <h1>Password: {userDetails.password}</h1>
     </div>
   );
 }
